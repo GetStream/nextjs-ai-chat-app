@@ -16,8 +16,8 @@ export default function Home() {
   const [error, setError] = useState<string | undefined>();
 
   // TODO: The userId and userName must be set for the code to run. Either dynamically after log-in or hardcoded
-  const userId = undefined;
-  const userName = undefined;
+  const userId = "test-user";
+  const userName = "Test User";
 
   const getUserToken = useCallback(async (userId: string, userName: string) => {
     const response = await fetch('/api/token', {

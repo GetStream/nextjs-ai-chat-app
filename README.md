@@ -1,6 +1,6 @@
 ![nextjs-chat-template-cover](https://github.com/GetStream/nextjs-chat-template/assets/12433593/8080611f-6145-47aa-b0bc-11b838b13264)
 
-# Next.js Stream Chat Starter Template
+# ai-chat-nextjs
 
 This repository is intended as a started template for the [Next.js template page](https://vercel.com/templates).
 
