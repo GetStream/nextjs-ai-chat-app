@@ -24,6 +24,10 @@ const config: Config = {
         'primary-text': '#fbfbfb',
         'secondary-text': '#71787b',
         'tertiary-text': '#4f5456',
+
+        // Buttons
+        'button-primary': '#0878f9',
+        'button-primary-hover': '#51a0fb',
       },
     },
   },
