@@ -16,6 +16,15 @@ const config: Config = {
       gridTemplateColumns: {
         'chat-layout': 'auto 1fr',
       },
+      colors: {
+        'background-gray': '#202223',
+        'bg-gray-light': '#26292a',
+        'border-gray': '#2d3031',
+        'hover-gray': '#2e3132',
+        'primary-text': '#fbfbfb',
+        'secondary-text': '#71787b',
+        'tertiary-text': '#4f5456',
+      },
     },
   },
   plugins: [],

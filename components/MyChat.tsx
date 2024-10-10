@@ -12,6 +12,7 @@ import {
 import { ChannelSort, User } from 'stream-chat';
 import 'stream-chat-react/dist/css/v2/index.css';
 import { EmojiPicker } from 'stream-chat-react/emojis';
+import ChannelListContainer from './MyChannelList/ChannelListContainer';
 
 export default function MyChat({
   apiKey,
@@ -38,7 +39,6 @@ export default function MyChat({
 
   return (
     <Chat client={chatClient} theme='str-chat__theme-light'>
-      <ChannelList filters={filters} sort={sort} options={options} />
       <Channel EmojiPicker={EmojiPicker}>
         <Window>
           <ChannelHeader />
@@ -47,6 +47,13 @@ export default function MyChat({
         </Window>
         <Thread />
       </Channel>
+      <ChannelList
+        List={ChannelListContainer}
+        filters={filters}
+        sort={sort}
+        options={options}
+        sendChannelsToList
+      />
     </Chat>
   );
 }
