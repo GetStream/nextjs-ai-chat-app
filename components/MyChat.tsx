@@ -7,7 +7,6 @@ import {
   Thread,
   Window,
   useCreateChatClient,
-  ChannelHeader,
 } from 'stream-chat-react';
 import { ChannelSort, User } from 'stream-chat';
 import { EmojiPicker } from 'stream-chat-react/emojis';
@@ -15,6 +14,7 @@ import ChannelListContainer from './MyChannelList/ChannelListContainer';
 import ChannelListPreview from './MyChannelList/ChannelListPreview';
 import ChannelListUserRow from './MyChannelList/ChannelListUserRow';
 import MyMessage from './MyMessage/MyMessage';
+import MyChannelHeader from './MyChannelHeader/MyChannelHeader';
 
 export default function MyChat({
   apiKey,
@@ -44,7 +44,7 @@ export default function MyChat({
     <Chat client={chatClient} theme='str-chat__theme-light'>
       <Channel EmojiPicker={EmojiPicker} Message={MyMessage}>
         <Window>
-          <ChannelHeader />
+          <MyChannelHeader />
           <MessageList />
           <MessageInput />
         </Window>
