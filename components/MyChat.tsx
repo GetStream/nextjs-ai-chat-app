@@ -15,6 +15,7 @@ import ChannelListPreview from './MyChannelList/ChannelListPreview';
 import ChannelListUserRow from './MyChannelList/ChannelListUserRow';
 import MyMessage from './MyMessage/MyMessage';
 import MyChannelHeader from './MyChannelHeader/MyChannelHeader';
+import MyMessageInput from './MyMessageInput/MyMessageInput';
 
 export default function MyChat({
   apiKey,
@@ -46,11 +47,11 @@ export default function MyChat({
         <Window>
           <MyChannelHeader />
           <MessageList />
-          <MessageInput />
+          <MessageInput Input={MyMessageInput} />
         </Window>
         <Thread />
       </Channel>
-      <section className='w-2/5 bg-background-gray'>
+      <section className='w-2/5 flex flex-col bg-background-gray'>
         {userImageUrl && <ChannelListUserRow imageUrl={userImageUrl} />}
         <ChannelList
           List={ChannelListContainer}
