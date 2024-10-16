@@ -14,6 +14,7 @@ import 'stream-chat-react/dist/css/v2/index.css';
 import { EmojiPicker } from 'stream-chat-react/emojis';
 import ChannelListContainer from './MyChannelList/ChannelListContainer';
 import ChannelListPreview from './MyChannelList/ChannelListPreview';
+import ChannelListUserRow from './MyChannelList/ChannelListUserRow';
 
 export default function MyChat({
   apiKey,
@@ -37,6 +38,7 @@ export default function MyChat({
   const filters = { members: { $in: [user.id] } };
   const sort: ChannelSort = { last_message_at: -1 };
   const options = { limit: 10 };
+  const userImageUrl = chatClient.user?.image as string;
 
   return (
     <Chat client={chatClient} theme='str-chat__theme-light'>
@@ -48,14 +50,17 @@ export default function MyChat({
         </Window>
         <Thread />
       </Channel>
-      <ChannelList
-        List={ChannelListContainer}
-        Preview={ChannelListPreview}
-        filters={filters}
-        sort={sort}
-        options={options}
-        sendChannelsToList
-      />
+      <section className='w-2/5 bg-background-gray'>
+        {userImageUrl && <ChannelListUserRow imageUrl={userImageUrl} />}
+        <ChannelList
+          List={ChannelListContainer}
+          Preview={ChannelListPreview}
+          filters={filters}
+          sort={sort}
+          options={options}
+          sendChannelsToList
+        />
+      </section>
     </Chat>
   );
 }

@@ -16,7 +16,7 @@ export default function ChannelListContainer({
   }
   return (
     <section className='bg-background-gray p-4 border-l-2 border-t-2 border-border-gray text-primary-text flex flex-col items-center h-full'>
-      <div className='flex gap-2 items-center px-2 pb-4 text-secondary-text'>
+      <div className='w-full flex gap-2 items-center px-2 pb-4 text-secondary-text'>
         <span className='text-secondary-text font-semibold text-sm'>
           Chat history
         </span>
@@ -28,7 +28,7 @@ export default function ChannelListContainer({
       </div>
       {children}
       <button
-        className='mt-auto bg-button-primary flex gap-2 justify-center items-center py-4 text-primary-text m-2 rounded-xl w-full transition-colors duration-300 hover:bg-button-primary-hover'
+        className='mt-auto bg-button-primary flex gap-2 justify-center items-center py-4 text-primary-text m-2 rounded-xl w-full transition-colors duration-200 hover:bg-button-primary-hover'
         onClick={newChatClicked}
       >
         <Plus />

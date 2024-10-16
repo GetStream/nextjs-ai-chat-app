@@ -14,7 +14,7 @@ const config: Config = {
           'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
       },
       gridTemplateColumns: {
-        'chat-layout': 'auto 1fr',
+        'chat-layout': 'auto 300px',
       },
       colors: {
         'background-gray': '#202223',
