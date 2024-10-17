@@ -2,8 +2,7 @@ import { useChatContext, useMessageContext } from 'stream-chat-react';
 import Image from 'next/image';
 export default function MyMessage() {
   const { message } = useMessageContext();
-  const { client } = useChatContext();
-  const user = client.user;
+  const user = message.user;
 
   return (
     <div className='w-full relative mb-12'>
