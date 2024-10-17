@@ -6,7 +6,7 @@ export default function MyMessage() {
   const user = client.user;
 
   return (
-    <div className='w-full relative'>
+    <div className='w-full relative mb-12'>
       <div className='w-full bg-hover-gray rounded-xl p-8 text-slate-50'>
         {message.text}
       </div>

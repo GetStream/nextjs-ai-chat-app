@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { User } from 'stream-chat';
 import { LoadingIndicator } from 'stream-chat-react';
-import MyChat from '@/components/MyChat';
+import MyChatContainer from '@/components/MyChatContainer';
 
 type HomeState = {
   apiKey: string;
@@ -16,8 +16,8 @@ export default function Home() {
   const [error, setError] = useState<string | undefined>();
 
   // TODO: The userId and userName must be set for the code to run. Either dynamically after log-in or hardcoded
-  const userId = "test-user";
-  const userName = "Test User";
+  const userId = 'test-user';
+  const userName = 'Test User';
 
   const getUserToken = useCallback(async (userId: string, userName: string) => {
     const response = await fetch('/api/token', {
@@ -70,7 +70,7 @@ export default function Home() {
   }
 
   if (homeState) {
-    return <MyChat {...homeState} />;
+    return <MyChatContainer {...homeState} />;
   } else {
     <section className='w-screen h-screen flex items-center justify-center'>
       <LoadingIndicator />

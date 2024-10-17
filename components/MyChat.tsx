@@ -1,14 +1,13 @@
 import {
-  Chat,
   Channel,
   ChannelList,
   MessageList,
   MessageInput,
   Thread,
   Window,
-  useCreateChatClient,
+  useChatContext,
 } from 'stream-chat-react';
-import { ChannelSort, User } from 'stream-chat';
+import { ChannelFilters, ChannelSort, User } from 'stream-chat';
 import { EmojiPicker } from 'stream-chat-react/emojis';
 import ChannelListContainer from './MyChannelList/ChannelListContainer';
 import ChannelListPreview from './MyChannelList/ChannelListPreview';
@@ -16,37 +15,48 @@ import ChannelListUserRow from './MyChannelList/ChannelListUserRow';
 import MyMessage from './MyMessage/MyMessage';
 import MyChannelHeader from './MyChannelHeader/MyChannelHeader';
 import MyMessageInput from './MyMessageInput/MyMessageInput';
+import { useEffect } from 'react';
 
-export default function MyChat({
-  apiKey,
-  user,
-  token,
-}: {
-  apiKey: string;
-  user: User;
-  token: string;
-}) {
-  const chatClient = useCreateChatClient({
-    apiKey: apiKey,
-    tokenOrProvider: token,
-    userData: user,
-  });
+export default function MyChat({ user }: { user: User }) {
+  const { client, channel } = useChatContext();
 
-  if (!chatClient) {
+  useEffect(() => {
+    const unsubscribeFunction = channel?.on('message.new', (event) => {
+      console.log('event', event);
+      const messageBody = event?.message?.text;
+      if (event?.user?.id === user.id && messageBody) {
+        console.log('Call bot response API');
+        fetch('/api/sendAIResponse', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            channelId: channel?.id,
+            message: messageBody,
+          }),
+        });
+      }
+    });
+
+    return () => {
+      unsubscribeFunction?.unsubscribe();
+    };
+  }, [channel, user.id]);
+
+  if (!client) {
     return <div>Error, please try again later.</div>;
   }
 
-  const filters = { members: { $in: [user.id] } };
+  const filters: ChannelFilters = { members: { $in: [user.id] } };
   const sort: ChannelSort = { last_message_at: -1 };
   const options = { limit: 10 };
-  const userImageUrl = chatClient.user?.image as string;
+  const userImageUrl = user.image as string;
 
   return (
-    <Chat client={chatClient} theme='str-chat__theme-light'>
+    <>
       <Channel EmojiPicker={EmojiPicker} Message={MyMessage}>
         <Window>
           <MyChannelHeader />
-          <MessageList />
+          <MessageList disableDateSeparator />
           <MessageInput Input={MyMessageInput} />
         </Window>
         <Thread />
@@ -62,6 +72,6 @@ export default function MyChat({
           sendChannelsToList
         />
       </section>
-    </Chat>
+    </>
   );
 }

@@ -9,7 +9,6 @@ export default function ChannelListPreview({
   latestMessage,
   setActiveChannel,
 }: any) {
-  console.log({ channel });
   const latestMessageAt = channel.state.last_message_at;
   const { userLanguage } = useTranslationContext();
 
