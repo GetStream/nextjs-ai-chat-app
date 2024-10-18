@@ -1,13 +1,45 @@
-import { useChatContext, useMessageContext } from 'stream-chat-react';
+import { useMessageContext } from 'stream-chat-react';
 import Image from 'next/image';
+
+import Markdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
+import rehypeRaw from 'rehype-raw';
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
+import { dracula } from 'react-syntax-highlighter/dist/cjs/styles/prism';
+
 export default function MyMessage() {
   const { message } = useMessageContext();
   const user = message.user;
 
   return (
     <div className='w-full relative mb-12'>
-      <div className='w-full bg-hover-gray rounded-xl p-8 text-slate-50'>
-        {message.text}
+      <div className='w-full bg-hover-gray rounded-xl p-8 text-slate-50 overflow-x-scroll'>
+        <Markdown
+          remarkPlugins={[remarkGfm]}
+          rehypePlugins={[rehypeRaw]}
+          components={{
+            code({ node, inline, className, children, ...props }: any) {
+              const match = /language-(\w+)/.exec(className || '');
+
+              return !inline && match ? (
+                <SyntaxHighlighter
+                  style={dracula}
+                  PreTag='div'
+                  language={match[1]}
+                  {...props}
+                >
+                  {String(children).replace(/\n$/, '')}
+                </SyntaxHighlighter>
+              ) : (
+                <code className={className} {...props}>
+                  {children}
+                </code>
+              );
+            },
+          }}
+        >
+          {message.text}
+        </Markdown>
       </div>
       <div className='absolute -bottom-8 w-full px-4 flex items-end justify-between'>
         <div className='flex items-center gap-2'>
