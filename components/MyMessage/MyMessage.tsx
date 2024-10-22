@@ -6,10 +6,87 @@ import remarkGfm from 'remark-gfm';
 import rehypeRaw from 'rehype-raw';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { dracula } from 'react-syntax-highlighter/dist/cjs/styles/prism';
+import { useCallback, useEffect, useState } from 'react';
+
+export async function* streamingFetch(
+  input: RequestInfo | URL,
+  init?: RequestInit
+) {
+  const response = await fetch(input, init);
+  const reader = response.body?.getReader();
+  const decoder = new TextDecoder('utf-8');
+
+  if (!reader) return;
+  for (;;) {
+    const { done, value } = await reader.read();
+    if (done) break;
+
+    try {
+      yield decoder.decode(value);
+    } catch (e: any) {
+      console.warn(e.message);
+    }
+  }
+}
 
 export default function MyMessage() {
   const { message } = useMessageContext();
+
+  const [messageText, setMessageText] = useState(message.text);
+  const [streamingResponse, setStreamingResponse] = useState('');
+  const [streamingFinished, setStreamingFinished] = useState(false);
   const user = message.user;
+
+  const streamMessage = useCallback(async (messageToRespondTo: string) => {
+    const it = streamingFetch('/api/streamAIResponse', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        message: messageToRespondTo,
+      }),
+    });
+
+    for await (let value of it) {
+      try {
+        const jsonString = value.slice(5);
+        const chunk = JSON.parse(jsonString);
+        setStreamingResponse((prev) => prev + chunk.choices[0].delta.content);
+      } catch (e: any) {
+        console.warn(e.message);
+      }
+    }
+
+    setStreamingFinished(true);
+  }, []);
+
+  useEffect(() => {
+    if (streamingFinished) {
+      fetch('/api/updateMessage', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          messageId: message.id,
+          message: streamingResponse,
+        }),
+      });
+    }
+  }, [streamingResponse, streamingFinished, message.id]);
+  useEffect(() => {
+    const isStreaming = message.isStreaming;
+    if (isStreaming) {
+      const messageToRespondTo = message.message as string;
+      if (messageToRespondTo) {
+        streamMessage(messageToRespondTo);
+      }
+    }
+  }, [
+    message,
+    message.isStreaming,
+    message.channelId,
+    message.llmUrl,
+    message.message,
+    streamMessage,
+  ]);
 
   return (
     <div className='w-full relative mb-12'>
@@ -38,7 +115,7 @@ export default function MyMessage() {
             },
           }}
         >
-          {message.text}
+          {streamingResponse ? streamingResponse : messageText}
         </Markdown>
       </div>
       <div className='absolute -bottom-8 w-full px-4 flex items-end justify-between'>

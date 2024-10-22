@@ -22,11 +22,10 @@ export default function MyChat({ user }: { user: User }) {
 
   useEffect(() => {
     const unsubscribeFunction = channel?.on('message.new', (event) => {
-      console.log('event', event);
       const messageBody = event?.message?.text;
       if (event?.user?.id === user.id && messageBody) {
         console.log('Call bot response API');
-        fetch('/api/sendAIResponse', {
+        fetch('/api/sendInitialAIResponse', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({

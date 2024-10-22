@@ -1,5 +1,3 @@
-import { StreamChat } from 'stream-chat';
-
 export async function POST(req: Request, res: Response) {
   const apiKey = process.env.NEXT_PUBLIC_STREAM_API_KEY;
   if (!apiKey) {
@@ -16,13 +14,8 @@ export async function POST(req: Request, res: Response) {
       { status: 500 }
     );
   }
-  const serverClient = StreamChat.getInstance(apiKey, streamSecret);
 
-  const { channelId, message } = await req.json();
-  const channel = serverClient.channel('messaging', channelId);
-
-  console.log('channelId', channelId);
-  console.log('message', message);
+  const { message } = await req.json();
 
   const llmResponse = await fetch('http://localhost:1234/v1/chat/completions', {
     method: 'POST',
@@ -31,18 +24,9 @@ export async function POST(req: Request, res: Response) {
     },
     body: JSON.stringify({
       messages: [{ role: 'user', content: message }],
+      stream: true,
     }),
   });
 
-  const llmResponseJSON = await llmResponse.json();
-
-  console.log({ llmResponseJSON });
-  const response = llmResponseJSON.choices[0].message.content;
-
-  const messageResponse = await channel.sendMessage({
-    text: response,
-    user_id: 'ai',
-  });
-
-  return Response.json({});
+  return new Response(llmResponse.body);
 }

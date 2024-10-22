@@ -5,6 +5,7 @@ import Bookmark from '../Icons/Bookmark';
 
 export default function MyChannelHeader() {
   const { channel } = useChatContext();
+
   return (
     <div className='bg-background-gray border-b-2 border-border-gray px-8 py-6 flex justify-between items-center'>
       <h2 className='text-3xl font-semibold text-primary-text '>
