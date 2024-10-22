@@ -33,7 +33,9 @@ export default function ChannelListPreview({
       onClick={() => setActiveChannel(channel)}
     >
       <h2 className='text-primary-text text-lg'>{displayTitle}</h2>
-      <p className='text-secondary-text text-sm'>{latestMessage}</p>
+      <p className='text-secondary-text text-sm max-h-6 text-ellipsis overflow-hidden text-left'>
+        {latestMessage}
+      </p>
       <div className='flex items-center justify-between w-full'>
         <div className='flex items-center gap-2'>
           {members.map((member: any) => (
