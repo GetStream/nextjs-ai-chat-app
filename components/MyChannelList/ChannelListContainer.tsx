@@ -1,4 +1,4 @@
-import { ChannelListMessengerProps } from 'stream-chat-react';
+import { ChannelListMessengerProps, useChatContext } from 'stream-chat-react';
 import Trash from '../Icons/Trash';
 import Plus from '../Icons/Plus';
 
@@ -8,6 +8,7 @@ export default function ChannelListContainer({
   loading,
   error,
 }: React.PropsWithChildren<ChannelListMessengerProps>) {
+  const { client, setActiveChannel } = useChatContext();
   if (loading) {
     return <div>Loading...</div>;
   }
@@ -37,7 +38,17 @@ export default function ChannelListContainer({
     </section>
   );
 
-  function newChatClicked() {
+  async function newChatClicked() {
     console.log('New chat clicked');
+    const userId = client.user?.id;
+    console.log('userId', userId);
+    const response = await fetch('/api/createChannel', {
+      method: 'POST',
+      body: JSON.stringify({ userId }),
+    });
+    const data = await response.json();
+    console.log('data', data);
+    const channel = client.getChannelById('messaging', data.channelId, {});
+    setActiveChannel(channel);
   }
 }

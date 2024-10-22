@@ -16,6 +16,7 @@ import MyMessage from './MyMessage/MyMessage';
 import MyChannelHeader from './MyChannelHeader/MyChannelHeader';
 import MyMessageInput from './MyMessageInput/MyMessageInput';
 import { useEffect } from 'react';
+import EmptyState from './EmptyState/EmptyState';
 
 export default function MyChat({ user }: { user: User }) {
   const { client, channel } = useChatContext();
@@ -52,7 +53,11 @@ export default function MyChat({ user }: { user: User }) {
 
   return (
     <>
-      <Channel EmojiPicker={EmojiPicker} Message={MyMessage}>
+      <Channel
+        EmojiPicker={EmojiPicker}
+        Message={MyMessage}
+        EmptyStateIndicator={EmptyState}
+      >
         <Window>
           <MyChannelHeader />
           <MessageList disableDateSeparator />
