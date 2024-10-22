@@ -6,7 +6,7 @@ export default function ChannelListUserRow({
   imageUrl: string | undefined;
 }) {
   return (
-    <div className='p-4 flex gap-6 justify-center items-center'>
+    <div className='p-7 h-24 flex gap-6 justify-center items-center border-b-2 border-l-2 border-border-gray'>
       {imageUrl && (
         <div className='relative'>
           <Image

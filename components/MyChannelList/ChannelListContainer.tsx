@@ -16,7 +16,7 @@ export default function ChannelListContainer({
     return <div>Error: {error.message}</div>;
   }
   return (
-    <section className='bg-background-gray p-4 border-l-2 border-t-2 border-border-gray text-primary-text flex flex-col items-center h-full'>
+    <section className='bg-background-gray p-4 border-l-2 border-border-gray text-primary-text flex flex-col items-center h-full'>
       <div className='w-full flex gap-2 items-center px-2 pb-4 text-secondary-text'>
         <span className='text-secondary-text font-semibold text-sm'>
           Chat history

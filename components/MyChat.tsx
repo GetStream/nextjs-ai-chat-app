@@ -51,6 +51,9 @@ export default function MyChat({ user }: { user: User }) {
   const options = { limit: 10 };
   const userImageUrl = user.image as string;
 
+  console.log('Channel title: ', channel?.data?.name);
+  console.log({ channel });
+
   return (
     <>
       <Channel
@@ -59,7 +62,7 @@ export default function MyChat({ user }: { user: User }) {
         EmptyStateIndicator={EmptyState}
       >
         <Window>
-          <MyChannelHeader />
+          {channel?.data?.name && <MyChannelHeader />}
           <MessageList disableDateSeparator />
           <MessageInput Input={MyMessageInput} />
         </Window>

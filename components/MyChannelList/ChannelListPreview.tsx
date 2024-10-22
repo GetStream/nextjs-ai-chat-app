@@ -29,7 +29,7 @@ export default function ChannelListPreview({
     <button
       className={`${
         activeChannel.id === channel.id ? 'bg-hover-gray' : 'bg-gray-light'
-      } space-y-2 cursor-pointer p-4 rounded-xl w-full flex flex-col items-start transition-colors hover:bg-hover-gray`}
+      } space-y-2 cursor-pointer p-4 my-2 rounded-xl w-full flex flex-col items-start transition-colors hover:bg-hover-gray`}
       onClick={() => setActiveChannel(channel)}
     >
       <h2 className='text-primary-text text-lg'>{displayTitle}</h2>
