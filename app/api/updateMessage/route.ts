@@ -19,7 +19,6 @@ export async function POST(req: Request, res: Response) {
   const serverClient = StreamChat.getInstance(apiKey, streamSecret);
 
   const { messageId, message } = await req.json();
-  console.log('message', message);
   const updatedMessage = {
     id: messageId,
     text: message as string,
@@ -28,8 +27,7 @@ export async function POST(req: Request, res: Response) {
   };
 
   const messageResponse = await serverClient.updateMessage(updatedMessage);
-
-  console.log('MessageResponse: ', messageResponse);
+  // console.log('MessageResponse: ', messageResponse);
 
   return Response.json({});
 }

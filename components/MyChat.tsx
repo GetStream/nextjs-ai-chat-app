@@ -55,7 +55,7 @@ export default function MyChat({ user }: { user: User }) {
   console.log({ channel });
 
   return (
-    <>
+    <main>
       <Channel
         EmojiPicker={EmojiPicker}
         Message={MyMessage}
@@ -68,7 +68,7 @@ export default function MyChat({ user }: { user: User }) {
         </Window>
         <Thread />
       </Channel>
-      <section className='w-2/5 flex flex-col bg-background-gray'>
+      <section className='w-full flex flex-col bg-background-gray'>
         {userImageUrl && <ChannelListUserRow imageUrl={userImageUrl} />}
         <ChannelList
           List={ChannelListContainer}
@@ -79,6 +79,6 @@ export default function MyChat({ user }: { user: User }) {
           sendChannelsToList
         />
       </section>
-    </>
+    </main>
   );
 }

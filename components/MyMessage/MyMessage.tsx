@@ -89,34 +89,37 @@ export default function MyMessage() {
   ]);
 
   return (
-    <div className='w-full relative mb-12'>
-      <div className='w-full bg-hover-gray rounded-xl p-8 text-slate-50 overflow-x-scroll'>
-        <Markdown
-          remarkPlugins={[remarkGfm]}
-          rehypePlugins={[rehypeRaw]}
-          components={{
-            code({ node, inline, className, children, ...props }: any) {
-              const match = /language-(\w+)/.exec(className || '');
+    <div className='relative mb-12'>
+      <div className='bg-hover-gray rounded-xl p-8 text-slate-50 overflow-x-auto max-w-full'>
+        <div className='max-w-prose'>
+          <Markdown
+            remarkPlugins={[remarkGfm]}
+            rehypePlugins={[rehypeRaw]}
+            className=''
+            components={{
+              code({ node, inline, className, children, ...props }: any) {
+                const match = /language-(\w+)/.exec(className || '');
 
-              return !inline && match ? (
-                <SyntaxHighlighter
-                  style={dracula}
-                  PreTag='div'
-                  language={match[1]}
-                  {...props}
-                >
-                  {String(children).replace(/\n$/, '')}
-                </SyntaxHighlighter>
-              ) : (
-                <code className={className} {...props}>
-                  {children}
-                </code>
-              );
-            },
-          }}
-        >
-          {streamingResponse ? streamingResponse : messageText}
-        </Markdown>
+                return !inline && match ? (
+                  <SyntaxHighlighter
+                    style={dracula}
+                    PreTag='div'
+                    language={match[1]}
+                    {...props}
+                  >
+                    {String(children).replace(/\n$/, '')}
+                  </SyntaxHighlighter>
+                ) : (
+                  <code className={className} {...props}>
+                    {children}
+                  </code>
+                );
+              },
+            }}
+          >
+            {streamingResponse ? streamingResponse : messageText}
+          </Markdown>
+        </div>
       </div>
       <div className='absolute -bottom-8 w-full px-4 flex items-end justify-between'>
         <div className='flex items-center gap-2'>
