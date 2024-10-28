@@ -39,15 +39,12 @@ export default function ChannelListContainer({
   );
 
   async function newChatClicked() {
-    console.log('New chat clicked');
     const userId = client.user?.id;
-    console.log('userId', userId);
     const response = await fetch('/api/createChannel', {
       method: 'POST',
       body: JSON.stringify({ userId }),
     });
     const data = await response.json();
-    console.log('data', data);
     const channel = client.getChannelById('messaging', data.channelId, {});
     setActiveChannel(channel);
   }

@@ -7,32 +7,11 @@ import rehypeRaw from 'rehype-raw';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { dracula } from 'react-syntax-highlighter/dist/cjs/styles/prism';
 import { useCallback, useEffect, useState } from 'react';
-
-export async function* streamingFetch(
-  input: RequestInfo | URL,
-  init?: RequestInit
-) {
-  const response = await fetch(input, init);
-  const reader = response.body?.getReader();
-  const decoder = new TextDecoder('utf-8');
-
-  if (!reader) return;
-  for (;;) {
-    const { done, value } = await reader.read();
-    if (done) break;
-
-    try {
-      yield decoder.decode(value);
-    } catch (e: any) {
-      console.warn(e.message);
-    }
-  }
-}
+import { streamingFetch } from '@/lib/streamingFetch';
 
 export default function MyMessage() {
   const { message } = useMessageContext();
 
-  const [messageText, setMessageText] = useState(message.text);
   const [streamingResponse, setStreamingResponse] = useState('');
   const [streamingFinished, setStreamingFinished] = useState(false);
   const user = message.user;
@@ -117,7 +96,7 @@ export default function MyMessage() {
               },
             }}
           >
-            {streamingResponse ? streamingResponse : messageText}
+            {streamingResponse ? streamingResponse : message.text}
           </Markdown>
         </div>
       </div>

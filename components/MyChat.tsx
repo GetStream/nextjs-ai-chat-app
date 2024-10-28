@@ -25,7 +25,6 @@ export default function MyChat({ user }: { user: User }) {
     const unsubscribeFunction = channel?.on('message.new', (event) => {
       const messageBody = event?.message?.text;
       if (event?.user?.id === user.id && messageBody) {
-        console.log('Call bot response API');
         fetch('/api/sendInitialAIResponse', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -50,9 +49,6 @@ export default function MyChat({ user }: { user: User }) {
   const sort: ChannelSort = { last_message_at: -1 };
   const options = { limit: 10 };
   const userImageUrl = user.image as string;
-
-  console.log('Channel title: ', channel?.data?.name);
-  console.log({ channel });
 
   return (
     <main>

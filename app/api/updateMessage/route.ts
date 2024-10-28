@@ -27,7 +27,7 @@ export async function POST(req: Request, res: Response) {
   };
 
   const messageResponse = await serverClient.updateMessage(updatedMessage);
-  // console.log('MessageResponse: ', messageResponse);
+  console.log('MessageResponse: ', messageResponse);
 
   return Response.json({});
 }

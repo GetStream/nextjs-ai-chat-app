@@ -57,10 +57,12 @@ main {
 .str-chat__channel-list {
   width: 100%;
 }
+
 .str-chat__channel {
   width: 100%;
   height: 100dvh;
 }
+
 .str-chat__thread {
   width: 45%;
 }
