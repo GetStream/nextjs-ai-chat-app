@@ -1,36 +1,28 @@
 ![nextjs-chat-template-cover](https://github.com/GetStream/nextjs-chat-template/assets/12433593/8080611f-6145-47aa-b0bc-11b838b13264)
 
-# ai-chat-nextjs
+# Next.js AI chat app
 
-This repository is intended as a started template for the [Next.js template page](https://vercel.com/templates).
+This repository demonstrates how to build a [Next.js](https://nextjs.org/) chat application with modern architecture using Stream's [React Chat SDK](https://getstream.io/chat/sdk/react/).
+It is built upon [this Dribbble design](https://dribbble.com/shots/20928432-Brainwave-AI-UI-Kit) from [Tran Mau Tri Tam](https://dribbble.com/tranmautritam).
 
-The following can be understood as the content that should go on the template page.
+If you want to learn more, read the accompanying [blog post]().
 
-## Overview
+# Features
 
-Use this example to have a fully functional chat app up and deployed on Vercel in no time.
-
-Stream offers a powerful, real-time, and highly reliable chat messaging infrastructure. Combined with feature-rich SDKs and plenty of ready-to-use, pre-built components it allows you to integrate chat into your app in hours, not weeks.
-
-When finishing the setup, you'll have a functional chat application built, ready to be customized for your use case.
-
-## Features
-
+- Streaming chatbot answers
+- LLM-generated dynamic channel naming
+- React Server Actions and route handlers 
 - Next.js App Router
 - Styling with [TailwindCSS](https://tailwindcss.com)
 - Chat integration with [Stream Chat React](https://getstream.io/chat/docs/sdk/react/)
 
-## Getting started
+# Running locally
 
 Follow these steps to get the project up and running for you.
 
-### Step 1: Create an account on the Stream Dashboard
+## Step 1: Setup access to a Stream backend
 
-Head over to the [Stream Dashboard](https://dashboard.getstream.io/) and create an account.
-
-### Step 2: Set up a new project with your Stream account
-
-Create a new project to build up your application (all handled and managed by Stream).
+Head to the [Stream Dashboard](https://dashboard.getstream.io/) and create an account. Create a new project to build up your application (all handled and managed by Stream).
 
 This is necessary because you need two properties from this.
 
@@ -41,21 +33,33 @@ See the red rectangle in the screenshot below on where you can retrieve this inf
 
 <img width="1511" alt="stream-apikey-and-secret" src="https://github.com/GetStream/nextjs-chat-template/assets/12433593/40201ab8-4c55-426d-94bc-e89649849ffc">
 
-### Step 3: Create a `.env.local` file
+Create a `.env.local` file at the project's root and add the API key and the secret. A template file (`.env.template`) is available to view. Ensure you follow the correct naming conventions.
 
-Create this file at the root of the project and add both the API key and the secret. A template file (`.env.template`) is available to see and make sure you follow the correct naming conventions.
-
-### Step 4: Insert a user ID and name
-
-Inside of `app/page.tsx` you will need to update the values of `userId` and `userName` to be real values instead of `undefined`.
+Inside `app/page.tsx`, you must update the values of `userId` and `userName` to be actual values instead of `undefined`.
 
 If you forget to do this, your app will show an error, displaying what you have missed.
 
-### Step 5: Run the app
+## Step 2: Run a LLM locally
+
+For this project, we're using [LM Studio](https://lmstudio.ai/), but you can also use [other tools](https://getstream.io/blog/best-local-llm-tools/).
+
+Make sure you have a local server running a model. We have used `Llama-3.2-3B-Instruct-4bit` and exposed it on port `1234`.
+
+## Step 3: Run the project
+
+First, install all the dependencies for the project:
+
+```bash
+npm install
+# or
+yarn
+```
 
 You're ready to run the app with the command:
 
-```
+```bash
+npm run dev
+# or
 yarn dev
 ```
 
