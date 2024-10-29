@@ -15,31 +15,10 @@ import ChannelListUserRow from './MyChannelList/ChannelListUserRow';
 import MyMessage from './MyMessage/MyMessage';
 import MyChannelHeader from './MyChannelHeader/MyChannelHeader';
 import MyMessageInput from './MyMessageInput/MyMessageInput';
-import { useEffect } from 'react';
 import EmptyState from './EmptyState/EmptyState';
 
 export default function MyChat({ user }: { user: User }) {
   const { client, channel } = useChatContext();
-
-  useEffect(() => {
-    const unsubscribeFunction = channel?.on('message.new', (event) => {
-      const messageBody = event?.message?.text;
-      if (event?.user?.id === user.id && messageBody) {
-        fetch('/api/sendInitialAIResponse', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            channelId: channel?.id,
-            message: messageBody,
-          }),
-        });
-      }
-    });
-
-    return () => {
-      unsubscribeFunction?.unsubscribe();
-    };
-  }, [channel, user.id]);
 
   if (!client) {
     return <div>Error, please try again later.</div>;

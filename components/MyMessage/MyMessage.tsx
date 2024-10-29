@@ -6,66 +6,10 @@ import remarkGfm from 'remark-gfm';
 import rehypeRaw from 'rehype-raw';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { dracula } from 'react-syntax-highlighter/dist/cjs/styles/prism';
-import { useCallback, useEffect, useState } from 'react';
-import { streamingFetch } from '@/lib/streamingFetch';
 
 export default function MyMessage() {
   const { message } = useMessageContext();
-
-  const [streamingResponse, setStreamingResponse] = useState('');
-  const [streamingFinished, setStreamingFinished] = useState(false);
   const user = message.user;
-
-  const streamMessage = useCallback(async (messageToRespondTo: string) => {
-    const it = streamingFetch('/api/streamAIResponse', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        message: messageToRespondTo,
-      }),
-    });
-
-    for await (let value of it) {
-      try {
-        const jsonString = value.slice(5);
-        const chunk = JSON.parse(jsonString);
-        setStreamingResponse((prev) => prev + chunk.choices[0].delta.content);
-      } catch (e: any) {
-        console.warn(e.message);
-      }
-    }
-
-    setStreamingFinished(true);
-  }, []);
-
-  useEffect(() => {
-    if (streamingFinished) {
-      fetch('/api/updateMessage', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          messageId: message.id,
-          message: streamingResponse,
-        }),
-      });
-    }
-  }, [streamingResponse, streamingFinished, message.id]);
-  useEffect(() => {
-    const isStreaming = message.isStreaming;
-    if (isStreaming) {
-      const messageToRespondTo = message.message as string;
-      if (messageToRespondTo) {
-        streamMessage(messageToRespondTo);
-      }
-    }
-  }, [
-    message,
-    message.isStreaming,
-    message.channelId,
-    message.llmUrl,
-    message.message,
-    streamMessage,
-  ]);
 
   return (
     <div className='relative mb-12'>
@@ -96,7 +40,7 @@ export default function MyMessage() {
               },
             }}
           >
-            {streamingResponse ? streamingResponse : message.text}
+            {message.text}
           </Markdown>
         </div>
       </div>
