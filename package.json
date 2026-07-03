@@ -12,10 +12,10 @@
     "@emoji-mart/data": "^1.1.2",
     "@emoji-mart/react": "^1.1.1",
     "@mapbox/rehype-prism": "^0.9.0",
-    "ai": "^3.4.14",
+    "ai": "^5.0.52",
     "emoji-mart": "^5.5.2",
-    "next": "14.2.2",
-    "prismjs": "^1.29.0",
+    "next": "15.5.18",
+    "prismjs": "^1.30.0",
     "react": "^18",
     "react-dom": "^18",
     "react-markdown": "^9.0.1",
@@ -25,7 +25,7 @@
     "remark-gfm": "^4.0.0",
     "stream-chat": "^8.26.0",
     "stream-chat-react": "^11.15.1",
-    "uuid": "^10.0.0",
+    "uuid": "^14.0.0",
     "zod": "^3.23.8"
   },
   "devDependencies": {
