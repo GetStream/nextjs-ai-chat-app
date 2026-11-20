@@ -11,32 +11,56 @@ import { streamingFetch } from '@/lib/streamingFetch';
 
 export default function MyMessage() {
   const { message } = useMessageContext();
+  const user = message.user;
 
   const [streamingResponse, setStreamingResponse] = useState('');
   const [streamingFinished, setStreamingFinished] = useState(false);
-  const user = message.user;
 
-  const streamMessage = useCallback(async (messageToRespondTo: string) => {
-    const it = streamingFetch('/api/streamAIResponse', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        message: messageToRespondTo,
-      }),
-    });
+  const streamMessage = useCallback(
+    async (messageToRespondTo: string, signal: AbortSignal) => {
+      setStreamingResponse('');
+      setStreamingFinished(false);
+      const it = streamingFetch('/api/streamAIResponse', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          message: messageToRespondTo,
+        }),
+        signal,
+      });
 
-    for await (let value of it) {
+      // The LLM sends server-sent events (`data: {...}` lines). A chunk can hold several
+      // events or end in the middle of one, so keep the unfinished line for the next chunk.
+      let buffer = '';
       try {
-        const jsonString = value.slice(5);
-        const chunk = JSON.parse(jsonString);
-        setStreamingResponse((prev) => prev + chunk.choices[0].delta.content);
+        for await (let value of it) {
+          buffer += value;
+          const lines = buffer.split('\n');
+          buffer = lines.pop() ?? '';
+          for (const line of lines) {
+            const jsonString = line.replace(/^data: /, '').trim();
+            if (!jsonString || jsonString === '[DONE]') continue;
+            try {
+              const chunk = JSON.parse(jsonString);
+              const content = chunk.choices?.[0]?.delta?.content ?? '';
+              setStreamingResponse((prev) => prev + content);
+            } catch (e: any) {
+              console.warn(e.message);
+            }
+          }
+        }
       } catch (e: any) {
+        // Aborted (the message unmounted) or the connection dropped.
+        if (signal.aborted) return;
         console.warn(e.message);
       }
-    }
 
-    setStreamingFinished(true);
-  }, []);
+      if (!signal.aborted) {
+        setStreamingFinished(true);
+      }
+    },
+    []
+  );
 
   useEffect(() => {
     if (streamingFinished) {
@@ -45,27 +69,30 @@ export default function MyMessage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           messageId: message.id,
-          message: streamingResponse,
+          // An empty answer means the LLM call failed. Store an error text instead,
+          // so the message stops streaming and is not requested again on every render.
+          message:
+            streamingResponse ||
+            'Sorry, I could not get an answer from the AI. Is the local LLM running?',
         }),
       });
     }
   }, [streamingResponse, streamingFinished, message.id]);
+
+  // Depend on these values, not on the `message` object, so that a re-render or an
+  // unrelated update of the message does not start another stream.
+  const isStreaming = message.custom?.isStreaming;
+  const messageToRespondTo = message.custom?.message;
   useEffect(() => {
-    const isStreaming = message.isStreaming;
-    if (isStreaming) {
-      const messageToRespondTo = message.message as string;
-      if (messageToRespondTo) {
-        streamMessage(messageToRespondTo);
-      }
-    }
-  }, [
-    message,
-    message.isStreaming,
-    message.channelId,
-    message.llmUrl,
-    message.message,
-    streamMessage,
-  ]);
+    if (!isStreaming || !messageToRespondTo) return;
+
+    // Stop the stream when the message unmounts. In development, React StrictMode runs
+    // this effect twice: the first stream is aborted here and only the second one writes
+    // the answer.
+    const controller = new AbortController();
+    streamMessage(messageToRespondTo, controller.signal);
+    return () => controller.abort();
+  }, [message.id, isStreaming, messageToRespondTo, streamMessage]);
 
   return (
     <div className='relative mb-12'>

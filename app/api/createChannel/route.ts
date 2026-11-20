@@ -1,4 +1,4 @@
-import { StreamChat } from 'stream-chat';
+import { StreamClient } from '@stream-io/node-sdk';
 import { v4 as uuidv4 } from 'uuid';
 
 export async function POST(req: Request, res: Response) {
@@ -17,14 +17,16 @@ export async function POST(req: Request, res: Response) {
       { status: 500 }
     );
   }
-  const serverClient = StreamChat.getInstance(apiKey, streamSecret);
+  const serverClient = new StreamClient(apiKey, streamSecret);
 
   const { userId } = await req.json();
-  const channel = serverClient.channel('messaging', uuidv4(), {
-    members: [userId, 'ai'],
-    created_by_id: userId,
+  const channel = serverClient.chat.channel('messaging', uuidv4());
+  const creationResult = await channel.getOrCreate({
+    data: {
+      created_by_id: userId,
+      members: [{ user_id: userId }, { user_id: 'ai' }],
+    },
   });
-  const creationResult = await channel.create();
   console.log('creationResult: ', creationResult);
 
   return Response.json({ channelId: channel.id });

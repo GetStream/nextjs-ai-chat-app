@@ -17,16 +17,33 @@ export async function POST(req: Request, res: Response) {
 
   const { message } = await req.json();
 
-  const llmResponse = await fetch('http://localhost:1234/v1/chat/completions', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      messages: [{ role: 'user', content: message }],
-      stream: true,
-    }),
-  });
+  try {
+    const llmResponse = await fetch(
+      'http://localhost:1234/v1/chat/completions',
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          messages: [{ role: 'user', content: message }],
+          stream: true,
+        }),
+        signal: req.signal,
+      }
+    );
+    if (!llmResponse.ok) {
+      return Response.json(
+        { error: `LLM request failed with status ${llmResponse.status}.` },
+        { status: 502 }
+      );
+    }
 
-  return new Response(llmResponse.body);
+    return new Response(llmResponse.body);
+  } catch (e) {
+    return Response.json(
+      { error: "Couldn't reach the LLM. Is it running on localhost:1234?" },
+      { status: 502 }
+    );
+  }
 }

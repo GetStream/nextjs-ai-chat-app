@@ -20,6 +20,8 @@ If you want to learn more, read the accompanying [blog post]().
 
 Follow these steps to get the project up and running for you.
 
+The project uses `stream-chat` v10 and `stream-chat-react` v15 on the client and `@stream-io/node-sdk` in the route handlers. It needs Node.js 22.18 or later.
+
 ## Step 1: Setup access to a Stream backend
 
 Head to the [Stream Dashboard](https://dashboard.getstream.io/) and create an account. Create a new project to build up your application (all handled and managed by Stream).
@@ -38,6 +40,8 @@ Create a `.env.local` file at the project's root and add the API key and the sec
 Inside `app/page.tsx`, you must update the values of `userId` and `userName` to be actual values instead of `undefined`.
 
 If you forget to do this, your app will show an error, displaying what you have missed.
+
+In the same project, create a user with the ID `ai`. Every new chat adds it as a member, and the AI answers are sent as this user.
 
 ## Step 2: Run a LLM locally
 
