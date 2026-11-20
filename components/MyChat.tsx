@@ -1,14 +1,18 @@
 import {
   Channel,
-  ChannelList,
+  ChannelPlaceholder,
   MessageList,
-  MessageInput,
-  Thread,
-  Window,
+  MessageComposer,
   useChatContext,
+  useStateStore,
+  useWorkspaceNavigation,
+  WithComponents,
 } from 'stream-chat-react';
-import { ChannelFilters, ChannelSort, User } from 'stream-chat';
-import { EmojiPicker } from 'stream-chat-react/emojis';
+import type {
+  ChannelPaginator,
+  ChannelStateData,
+  ClientUser,
+} from 'stream-chat';
 import ChannelListContainer from './MyChannelList/ChannelListContainer';
 import ChannelListPreview from './MyChannelList/ChannelListPreview';
 import ChannelListUserRow from './MyChannelList/ChannelListUserRow';
@@ -17,43 +21,54 @@ import MyChannelHeader from './MyChannelHeader/MyChannelHeader';
 import MyMessageInput from './MyMessageInput/MyMessageInput';
 import EmptyState from './EmptyState/EmptyState';
 
-export default function MyChat({ user }: { user: User }) {
-  const { client, channel } = useChatContext();
+const componentOverrides = {
+  ChannelListItemUI: ChannelListPreview,
+  EmptyStateIndicator: EmptyState,
+  MessageComposerUI: MyMessageInput,
+  MessageUI: MyMessage,
+};
+
+// Re-render when the channel's data changes, e.g. when the channel gets its name.
+const channelDataSelector = ({ data }: ChannelStateData) => ({ data });
+
+export default function MyChat({
+  user,
+  paginator,
+}: {
+  user: ClientUser;
+  paginator: ChannelPaginator;
+}) {
+  const { client } = useChatContext();
+  const {
+    openChannels: [channel],
+  } = useWorkspaceNavigation();
+  useStateStore(channel?.state, channelDataSelector);
 
   if (!client) {
     return <div>Error, please try again later.</div>;
   }
 
-  const filters: ChannelFilters = { members: { $in: [user.id] } };
-  const sort: ChannelSort = { last_message_at: -1 };
-  const options = { limit: 10 };
   const userImageUrl = user.image as string;
 
   return (
-    <main>
-      <Channel
-        EmojiPicker={EmojiPicker}
-        Message={MyMessage}
-        EmptyStateIndicator={EmptyState}
-      >
-        <Window>
-          {channel?.data?.name && <MyChannelHeader />}
-          <MessageList disableDateSeparator />
-          <MessageInput Input={MyMessageInput} />
-        </Window>
-        <Thread />
-      </Channel>
-      <section className='w-full flex flex-col bg-background-gray'>
-        {userImageUrl && <ChannelListUserRow imageUrl={userImageUrl} />}
-        <ChannelList
-          List={ChannelListContainer}
-          Preview={ChannelListPreview}
-          filters={filters}
-          sort={sort}
-          options={options}
-          sendChannelsToList
-        />
-      </section>
-    </main>
+    <WithComponents overrides={componentOverrides}>
+      <main>
+        {channel ? (
+          <Channel channel={channel}>
+            <MyChannelHeader />
+            <MessageList withDateSeparator={false} />
+            <MessageComposer />
+          </Channel>
+        ) : (
+          <ChannelPlaceholder>
+            <EmptyState />
+          </ChannelPlaceholder>
+        )}
+        <section className='w-full flex flex-col bg-background-gray'>
+          {userImageUrl && <ChannelListUserRow imageUrl={userImageUrl} />}
+          <ChannelListContainer paginator={paginator} />
+        </section>
+      </main>
+    </WithComponents>
   );
 }
