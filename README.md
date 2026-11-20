@@ -24,6 +24,8 @@ When finishing the setup, you'll have a functional chat application built, ready
 
 Follow these steps to get the project up and running for you.
 
+The project uses `stream-chat` v10 and `stream-chat-react` v15 on the client and `@stream-io/node-sdk` in the route handlers. It needs Node.js 22.18 or later.
+
 ### Step 1: Create an account on the Stream Dashboard
 
 Head over to the [Stream Dashboard](https://dashboard.getstream.io/) and create an account.
@@ -50,6 +52,8 @@ Create this file at the root of the project and add both the API key and the sec
 Inside of `app/page.tsx` you will need to update the values of `userId` and `userName` to be real values instead of `undefined`.
 
 If you forget to do this, your app will show an error, displaying what you have missed.
+
+In the same project, create a user with the ID `ai`. Every new chat adds it as a member, and the AI answers are sent as this user.
 
 ### Step 5: Run the app
 
