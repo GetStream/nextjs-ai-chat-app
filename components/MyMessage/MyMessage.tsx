@@ -11,10 +11,10 @@ import { streamingFetch } from '@/lib/streamingFetch';
 
 export default function MyMessage() {
   const { message } = useMessageContext();
+  const user = message.user;
 
   const [streamingResponse, setStreamingResponse] = useState('');
   const [streamingFinished, setStreamingFinished] = useState(false);
-  const user = message.user;
 
   const streamMessage = useCallback(async (messageToRespondTo: string) => {
     const it = streamingFetch('/api/streamAIResponse', {
@@ -51,19 +51,19 @@ export default function MyMessage() {
     }
   }, [streamingResponse, streamingFinished, message.id]);
   useEffect(() => {
-    const isStreaming = message.isStreaming;
+    const isStreaming = message.custom?.isStreaming;
     if (isStreaming) {
-      const messageToRespondTo = message.message as string;
+      const messageToRespondTo = message.custom?.message as string;
       if (messageToRespondTo) {
         streamMessage(messageToRespondTo);
       }
     }
   }, [
     message,
-    message.isStreaming,
-    message.channelId,
-    message.llmUrl,
-    message.message,
+    message.custom?.isStreaming,
+    message.custom?.channelId,
+    message.custom?.llmUrl,
+    message.custom?.message,
     streamMessage,
   ]);
 

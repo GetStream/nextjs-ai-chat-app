@@ -1,4 +1,4 @@
-import { StreamChat } from 'stream-chat';
+import { StreamClient } from '@stream-io/node-sdk';
 
 export async function POST(request: Request) {
   const apiKey = process.env.NEXT_PUBLIC_STREAM_API_KEY;
@@ -16,7 +16,7 @@ export async function POST(request: Request) {
       { status: 500 }
     );
   }
-  const serverClient = StreamChat.getInstance(apiKey, streamSecret);
+  const serverClient = new StreamClient(apiKey, streamSecret);
 
   const body = await request.json();
   const userId = body?.userId;
@@ -28,7 +28,9 @@ export async function POST(request: Request) {
     );
   }
 
-  const token = serverClient.createToken(userId);
+  // The client connects with this token as a fixed string (no token provider refreshes it),
+  // so it must not expire. `generateUserToken` would expire after one hour.
+  const token = serverClient.generatePermanentUserToken({ user_id: userId });
 
   const response = {
     userId: userId,
