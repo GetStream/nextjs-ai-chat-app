@@ -8,10 +8,7 @@ import {
   useWorkspaceNavigation,
 } from 'stream-chat-react';
 
-const channelStateSelector = ({ data, members }: ChannelStateData) => ({
-  latestMessageAt: data?.last_message_at,
-  members,
-});
+const membersSelector = ({ members }: ChannelStateData) => ({ members });
 
 export default function ChannelListPreview({
   active,
@@ -20,10 +17,13 @@ export default function ChannelListPreview({
   previewedMessage,
 }: ChannelListItemUIProps) {
   const { openChannel } = useWorkspaceNavigation();
-  const { latestMessageAt, members: channelMembers } = useStateStore(
+  const { members: channelMembers } = useStateStore(
     channel.state,
-    channelStateSelector
+    membersSelector
   );
+  // The previewed message is the channel's latest message and updates live.
+  // `channel.data.last_message_at` only changes when the channel is queried.
+  const latestMessageAt = previewedMessage?.created_at;
   const { userLanguage } = useTranslationContext();
 
   const timestamp = useMemo(() => {
