@@ -64,6 +64,8 @@ export default function ChannelListContainer({
     const channel = await client.channel('messaging', data.channelId).watch();
     // Add it to the channel list without re-querying the list.
     client.channelManager.ingestChannel(channel);
+    // Works around a stream-chat 10.2 paginator issue: after an empty first page, new chats land in an unrendered interval.
+    if (!paginator.items?.some((c) => c.cid === channel.cid)) await paginator.reload();
     openChannel(channel);
   }
 }

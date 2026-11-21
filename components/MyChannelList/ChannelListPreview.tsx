@@ -1,5 +1,6 @@
 import Image from 'next/image';
 import { useMemo } from 'react';
+import Markdown from 'react-markdown';
 import { type ChannelStateData, nsToDate } from 'stream-chat';
 import {
   type ChannelListItemUIProps,
@@ -30,7 +31,8 @@ export default function ChannelListPreview({
     if (!latestMessageAt) {
       return '';
     }
-    const formatter = new Intl.DateTimeFormat(userLanguage, {
+    // `userLanguage` is the user's translation language and is '' when none is set.
+    const formatter = new Intl.DateTimeFormat(userLanguage || 'en', {
       timeStyle: 'short',
     });
     return formatter.format(nsToDate(latestMessageAt));
@@ -48,7 +50,14 @@ export default function ChannelListPreview({
     >
       <h2 className='text-primary-text text-lg'>{displayTitle}</h2>
       <p className='text-secondary-text text-sm max-h-6 text-ellipsis overflow-hidden text-left'>
-        {previewedMessage?.text}
+        {previewedMessage?.text ? (
+          // Show the Markdown of AI answers as plain text.
+          <Markdown allowedElements={[]} unwrapDisallowed>
+            {previewedMessage.text}
+          </Markdown>
+        ) : (
+          'Nothing yet...'
+        )}
       </p>
       <div className='flex items-center justify-between w-full'>
         <div className='flex items-center gap-2'>
