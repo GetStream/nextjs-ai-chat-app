@@ -3,6 +3,10 @@ export async function* streamingFetch(
   init?: RequestInit
 ) {
   const response = await fetch(input, init);
+  if (!response.ok) {
+    console.warn(`Streaming request failed with status ${response.status}`);
+    return;
+  }
   const reader = response.body?.getReader();
   const decoder = new TextDecoder('utf-8');
 
@@ -12,7 +16,7 @@ export async function* streamingFetch(
     if (done) break;
 
     try {
-      yield decoder.decode(value);
+      yield decoder.decode(value, { stream: true });
     } catch (e: any) {
       console.warn(e.message);
     }

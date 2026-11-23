@@ -1,13 +1,13 @@
 'use client';
 
 import { useCallback, useEffect, useState } from 'react';
-import { User } from 'stream-chat';
+import type { ClientUser } from 'stream-chat';
 import { LoadingIndicator } from 'stream-chat-react';
 import MyChatContainer from '@/components/MyChatContainer';
 
 type HomeState = {
   apiKey: string;
-  user: User;
+  user: ClientUser;
   token: string;
 };
 
@@ -36,7 +36,7 @@ export default function Home() {
       setError('No token found');
     }
 
-    const user: User = {
+    const user: ClientUser = {
       id: userId,
       name: userName,
       image: `https://getstream.io/random_png/?id=${userId}&name=${userName}`,
